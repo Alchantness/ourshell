@@ -14,6 +14,7 @@ int lsh_ls(char **args);
 int lsh_help(char **args);
 int lsh_exit(char **args);
 int lsh_cat(char **args);
+int lsh_head(char **args);
 int lsh_mkdir(char **args);
 int lsh_rmdir(char **args);
 int lsh_rm(char **args);
@@ -28,6 +29,7 @@ char *builtin_str[] = {
   "sexit",
   "sls",
   "scat",
+  "shead",
   "srmdir",
   "srm",
   "smkdir"
@@ -47,6 +49,7 @@ int (*builtin_func[]) (char **) = {
   &lsh_exit,
   &lsh_ls,
   &lsh_cat,
+  &lsh_head,
   &lsh_rmdir,
   &lsh_rm,
   &lsh_mkdir
@@ -141,6 +144,30 @@ int lsh_cat(char **args)
         closedir(dptr);
     }
     return 1;
+}
+int lsh_head(char **args)
+{
+    DIR *dptr;
+    if (args[1] == NULL) {
+    fprintf(stderr, "lsh: expected argument to \"head\"\n");
+    }
+    else {
+        FILE *myfile;
+        char content;
+        int strlens = args[1];
+        int max = 0;
+        myfile = fopen(args[2], "r");
+        content = fgetc(myfile);
+        while (content != EOF){
+          max++;
+          if (max > strlens)
+            break;
+          printf ("%c", content);
+          content = fgetc(myfile);
+        }
+        fclose(myfile);
+    }
+      return 1;
 }
 
 int lsh_cd(char **args)
